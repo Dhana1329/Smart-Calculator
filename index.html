@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Calculator</title>
+ <style>
+    body {
+  background-color: #000;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  width: 300px;
+}
+
+h1 {
+  text-align: center;
+  color: orange;
+}
+
+#display {
+  width: 100%;
+  font-size: 2em;
+  padding: 10px;
+  background-color: #111;
+  border: none;
+  color: white;
+  text-align: right;
+  margin-bottom: 10px;
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.btn {
+  font-size: 1.2em;
+  padding: 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: #222;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn:hover {
+  background-color: #333;
+}
+
+.operator {
+  color: orange;
+}
+
+.equal {
+  background-color: orange;
+  color: white;
+}
+
+.equal:hover {
+  background-color: darkorange;
+}
+
+.action {
+  color: orange;
+}
+
+#history {
+  max-height: 150px;
+  overflow-y: auto;
+  border-top: 1px solid #333;
+  margin-bottom: 15px;
+  padding-top: 10px;
+}
+
+#history h3 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+  color: #ff8c42;
+}
+
+#history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#history-list li {
+  padding: 4px 0;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+#history-list li:hover {
+  background-color: #222;
+}
+#clear-history {
+  background-color: #444;
+  color: orange;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#clear-history:hover {
+  background-color: #666;
+}
+
+ </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Smart Calculator</h1>
+    <input type="text" id="display" readonly />
+    
+<div id="history">
+  <h3>History</h3>
+  <button id="clear-history" onclick="clearHistory()">Clear History</button>
+  <ul id="history-list"></ul>
+</div>
+    
+    <div class="buttons">
+      <button class="btn action" onclick="clearDisplay()">AC</button>
+      <button class="btn action" onclick="deleteLast()">⌫</button>
+      <button class="btn action" onclick="append('%')">%</button>
+      <button class="btn operator" onclick="append('÷')">÷</button>
+
+      <button class="btn" onclick="append('7')">7</button>
+      <button class="btn" onclick="append('8')">8</button>
+      <button class="btn" onclick="append('9')">9</button>
+      <button class="btn operator" onclick="append('×')">×</button>
+
+      <button class="btn" onclick="append('4')">4</button>
+      <button class="btn" onclick="append('5')">5</button>
+      <button class="btn" onclick="append('6')">6</button>
+      <button class="btn operator" onclick="append('−')">−</button>
+
+      <button class="btn" onclick="append('1')">1</button>
+      <button class="btn" onclick="append('2')">2</button>
+      <button class="btn" onclick="append('3')">3</button>
+      <button class="btn operator" onclick="append('+')">+</button>
+
+      <button class="btn action" onclick="append('()')">()</button>
+      <button class="btn" onclick="append('0')">0</button>
+      <button class="btn" onclick="append('.')">.</button>
+      <button class="btn equal" onclick="calculate()">=</button>
+    </div>
+  </div>
+
+  <script >
+    const display = document.getElementById('display');
+const historyList = document.getElementById('history-list');
+
+function append(char) {
+  if (char === '()') {
+    if (display.value.includes('(') && !display.value.includes(')')) {
+      display.value += ')';
+    } else {
+      display.value += '(';
+    }
+  } else {
+    display.value += char;
+  }
+}
+
+function clearDisplay() {
+  display.value = '';
+}
+
+function deleteLast() {
+  display.value = display.value.slice(0, -1);
+}
+
+function calculate() {
+  try {
+    const expression = display.value
+      .replace(/×/g, '*')
+      .replace(/÷/g, '/')
+      .replace(/−/g, '-');
+    const result = eval(expression);
+    addToHistory(`${display.value} = ${result}`);
+    display.value = result;
+  } catch {
+    display.value = 'Error';
+  }
+}
+
+function addToHistory(entry) {
+  const li = document.createElement('li');
+  li.textContent = entry;
+  li.onclick = () => {
+    const [exp] = entry.split('=');
+    display.value = exp.trim();
+  };
+  historyList.prepend(li);
+}
+function clearHistory() {
+  historyList.innerHTML = '';
+}
+
+  </script>
+</body>
+</html>
